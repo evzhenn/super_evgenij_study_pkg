@@ -1,21 +1,23 @@
 #!/usr/bin/env python3
-import time
+from datetime import datetime, timezone, timedelta
 import rclpy
 from rclpy.node import Node
+
+TZ = timezone(timedelta(hours=3))
 
 class TimePrinter(Node):
     def __init__(self):
         super().__init__('time_printer')
-        self.create_timer(5.0, self.print_time)   # вызывать print_time каждые 5 секунд
+        self.create_timer(5.0, self.print_time)
 
     def print_time(self):
-        now = time.strftime('%H:%M:%S')
+        now = datetime.now(TZ).strftime('%H:%M:%S')
         self.get_logger().info(f'Текущее время: {now}')
 
 def main(args=None):
     rclpy.init(args=args)
     node = TimePrinter()
-    rclpy.spin(node)          # держим узел живым, чтобы таймер срабатывал
+    rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
 
