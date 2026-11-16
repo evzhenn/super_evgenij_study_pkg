@@ -3,7 +3,7 @@ from datetime import datetime, timezone, timedelta
 import rclpy
 from rclpy.node import Node
 
-TZ = timezone(timedelta(hours=3))
+TZ = timezone(timedelta(hours=3))  # часовой пояс +3
 
 class TimePrinter(Node):
     def __init__(self):
