@@ -6,13 +6,27 @@ from std_msgs.msg import Int32
 class EvenNumberPublisher(Node):
     def __init__(self):
         super().__init__('even_pub')
-        self.even_pub = self.create_publisher(Int32, 'even_numbers', 10)
-        self.overflow_pub = self.create_publisher(Int32, 'overflow', 10)
-        self.create_timer(0.1, self.timer_callback)   # 10 Гц
+
+        self.declare_parameter('publish_frequency', 10.0)
+        self.declare_parameter('overflow_threshold', 100)
+        self.declare_parameter('topic_name', 'even_numbers')
+        self.declare_parameter('overflow_topic', 'overflow')
+
+        freq = self.get_parameter('publish_frequency').value
+        self.threshold = self.get_parameter('overflow_threshold').value
+        topic = self.get_parameter('topic_name').value
+        overflow_topic = self.get_parameter('overflow_topic').value
+
+        self.even_pub = self.create_publisher(Int32, topic, 10)
+        self.overflow_pub = self.create_publisher(Int32, overflow_topic, 10)
+        self.create_timer(1.0 / freq, self.timer_callback)
         self.count = 0
 
+        self.get_logger().info(
+            f'Старт: {freq} Гц, порог {self.threshold}, топики {topic} и {overflow_topic}')
+
     def timer_callback(self):
-        if self.count >= 100:
+        if self.count >= self.threshold:
             overflow_msg = Int32()
             overflow_msg.data = self.count
             self.overflow_pub.publish(overflow_msg)
@@ -34,7 +48,7 @@ def main():
         pass
     finally:
         node.destroy_node()
-        rclpy.shutdown()
+        rclpy.try_shutdown()
 
 if __name__ == '__main__':
     main()
