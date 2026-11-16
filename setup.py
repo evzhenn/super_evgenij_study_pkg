@@ -14,6 +14,7 @@ setup(
         ('share/' + package_name, ['package.xml']),
         (os.path.join('share', package_name, 'launch'), glob('launch/*.py')),
         (os.path.join('share', package_name, 'params'), glob('params/*.yaml')),
+        (os.path.join('share', package_name, 'rviz'), glob('rviz/*.rviz')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -26,11 +27,15 @@ setup(
             'pytest',
         ],
     },
-    entry_points={
+        entry_points={
         'console_scripts': [
             'time_printer = super_evgenij_study_pkg.time_printer:main',
             'even_number_publisher = super_evgenij_study_pkg.even_number_publisher:main',
             'overflow_listener = super_evgenij_study_pkg.overflow_listener:main',
+            'static_tf_broadcaster = super_evgenij_study_pkg.static_tf_broadcaster:main',
+            'tf_listener = super_evgenij_study_pkg.tf_listener:main',
+            'turtle_carrot_broadcaster = super_evgenij_study_pkg.turtle_carrot_broadcaster:main',
         ],
     },
+
 )
